@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Pizzas.Data;
+using Pizzas.Services;
 
 namespace Pizzas
 {
@@ -30,6 +31,7 @@ namespace Pizzas
         {
             services.AddDbContext<PizzaDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("PizzaConnection")));
+            services.AddTransient<IStoreService, DbStoreService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
