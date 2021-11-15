@@ -7,7 +7,7 @@ namespace Pizzas.Entities
     public class Pizza
     {
 
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
         public Guid Id { get; set; }
 
         [Required]

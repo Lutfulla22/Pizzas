@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Pizzas.Entities;
 using Pizzas.Mapper;
 using Pizzas.Models;
 using Pizzas.Services;
@@ -60,12 +61,27 @@ namespace Pizzas.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> PutAsync([FromRoute] Guid id, [FromBody] UpdatedPizza updatedPizza)
+        public async Task<ActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] NewPizza newPizza)
         {
-            var updatedPizzaResult = await _pizzaStore.UpdatePizzaAsync(id, updatedPizza);
-            if (updatedPizzaResult.IsSuccess)
+            var pizzaEntity = newPizza.ToPizzaEntities();
+            pizzaEntity.Id = id;
+            var updateResult = await _pizzaStore.UpdatePizzaAsync(id, pizzaEntity);
+
+            if (updateResult.IsSuccess)
             {
-                return Ok(updatedPizzaResult.updatedPizza);
+                return Ok(updateResult.pizza);
+            }
+            return BadRequest();
+
+        }
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+        {
+            var deleteResult = await _pizzaStore.RemovePizzaAsync(id);
+            if (deleteResult.IsSuccess)
+            {
+                return Ok();
             }
             return BadRequest();
         }

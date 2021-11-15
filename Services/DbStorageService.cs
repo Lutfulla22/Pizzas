@@ -73,7 +73,7 @@ namespace Pizzas.Services
             {
                 if (!await _context.Pizzas.AnyAsync(p => p.Id == pizza.Id))
                 {
-                    
+
                     await _context.Pizzas.AddAsync(pizza);
                     await _context.SaveChangesAsync();
 
@@ -92,30 +92,55 @@ namespace Pizzas.Services
             }
         }
 
-        public async Task<(bool IsSuccess, Exception exception, UpdatedPizza updatedPizza)> UpdatePizzaAsync(Guid id, UpdatedPizza updatedpizza)
+        public async Task<(bool IsSuccess, Exception exception)> RemovePizzaAsync(Guid id)
         {
-
             try
             {
                 if (await _context.Pizzas.AnyAsync(p => p.Id == id))
                 {
-                    _context.Pizzas.Update(updatedpizza.ToPizzaEntities());
+                    _context.Pizzas.Remove(_context.Pizzas.FirstOrDefault(p => p.Id == id));
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation($"Pizza updated in DB: {id}");
+                    _logger.LogInformation($"Pizza removed from DB: {id}");
 
-                    return (true, null, updatedpizza);
+                    return (true, null);
                 }
                 else
                 {
-                    return (false, new Exception(), updatedpizza);
+                    return (false, null);
                 }
             }
             catch (Exception e)
             {
-                _logger.LogInformation($"Updating pizza in DB: {id} not found");
+                _logger.LogInformation($"Deleting pizza from DB: {id} failed\n{e.Message}", e);
+                return (false, e);
+            }
+        }
+
+        public async Task<(bool IsSuccess, Exception exception, Pizza pizza)> UpdatePizzaAsync(Guid id, Pizza pizza)
+        {
+
+            try
+            {
+                if (await _context.Pizzas.AnyAsync(p => p.Id == pizza.Id))
+                {
+                    _context.Pizzas.Update(pizza);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation($"Pizza updated in DB: {pizza.Id}.");
+                    return (true, null, pizza);
+                }
+                else
+                {
+                    return (false, new Exception(), null);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation($"Updating with given ID: {pizza.Id} not found\nError: {e.Message}");
                 return (false, e, null);
             }
         }
+        
     }
 }

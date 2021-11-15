@@ -11,6 +11,7 @@ namespace Pizzas.Services
         Task<(bool IsSuccess, Exception exception)> InsertPizzaAsync(Pizza pizza);
         Task<(bool IsSuccess, Exception exception, List<Models.PizzaWithoutAnything> pizza)> GetPizzaAsync();
         Task<(bool IsSuccess, Exception exception, Pizza pizzaResult)> GetPizzaAsync(Guid Id);
-        Task<(bool IsSuccess, Exception exception, UpdatedPizza updatedPizza)> UpdatePizzaAsync(Guid id, UpdatedPizza pizza);
+        Task<(bool IsSuccess, Exception exception, Pizza pizza)> UpdatePizzaAsync(Guid id, Pizza pizza);
+        Task<(bool IsSuccess, Exception exception)> RemovePizzaAsync(Guid id);
     }
 }
